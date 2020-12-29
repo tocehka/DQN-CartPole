@@ -5,6 +5,7 @@ from torch.nn import MSELoss
 from torch import Tensor, distributions
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 class GameEmulator:
     def __init__(self, epochs, default_reward, batch_size):
@@ -106,9 +107,16 @@ class GameEmulator:
                 action = np.argmax(out.detach().numpy())
                 state, _, done, _ = self.game.env_step(action)
                 self.game.env_render()
+    
+    def plot(self):
+        plt.plot([i for i,v in enumerate(self.overall_reward)], self.overall_reward)
+        plt.xlabel("Number of epochs")
+        plt.ylabel("Reward")
+        plt.show()
 
 if __name__ == "__main__":
     game = GameEmulator(epochs=4000, default_reward=0, batch_size=100)
     game.train_model(final_reward=195)
+    game.plot()
     game.play()
 
